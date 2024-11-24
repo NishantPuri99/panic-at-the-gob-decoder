@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pretty Print Binary</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <style>
+        marquee {
+            font-size: 1.5rem;
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <h1>Gopher the Gob Decoder</h1>
+    <h2>Do you want to decode something?</h2>
+    <form hx-post="/c3VibWl0" hx-target="#result" method="post">
+        <textarea id="txtArea" name="userInput" rows="10" cols="70" required placeholder="SSA8MyBiYXNlNjQ="></textarea>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="result"></div>
+    <marquee behavior="scroll" direction="left" scrollamount="9000">
+        <b>Advisory!</b> <i>Q1ZFLTIwMjQtMzQxNTY=</i> unleashed! Stay safe of encoded gobs
+    </marquee>
+</body>
+</html>
