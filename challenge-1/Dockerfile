@@ -1,5 +1,6 @@
 FROM golang
 
+COPY flag.txt /app/
 WORKDIR /app/website
 COPY website/ .
 RUN go build main.go
