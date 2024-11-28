@@ -11,7 +11,7 @@ RUN mkdir /challenge && chmod 700 /challenge
 RUN tar zcvf /challenge/artifacts.tar.gz main.go
 
 # This needs to be your flag. I pulled this from your code. double check.
-RUN echo "{\"flag\": \"hackcenter{FLAGE}\"}" > /challenge/metadata.json
+RUN echo "{\"flag\":\"$(cat flag.txt)\"}" > /challenge/metadata.json
 
 EXPOSE 8000
 

@@ -8,11 +8,12 @@ import (
 	"html"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"text/template"
 )
 
-const maxDepth = 64 // Maximum allowed depth
+const maxDepth = 16 // Maximum allowed depth
 
 // Experimental Decoding with depth limited
 func customDecode(data interface{}, depth int) interface{} {
@@ -84,6 +85,7 @@ func getSanitisedString(input string) string {
 	return base64DecodedString
 }
 
+// This handles it all. Don't panic
 func submitHandler(w http.ResponseWriter, r *http.Request) {
 	userInput := r.FormValue("userInput")
 	safeInput := html.EscapeString(userInput)
@@ -96,9 +98,14 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 		sanitisedString := getSanitisedString(safeInput)
 
 		//TODO: REMOVE THIS API KEY
-		sb.WriteString("fzb nhc rwjr sxkzagr nhcz qnl piq sgp? ycreiaj kpdm awic nhc EVA4zUeGAYujKssfA2cApfQgPOnxFvpuJSwLluL3GR0=")
+		thisCanNeverPrintDontPanic, ERR := os.ReadFile("./assets/dontPanic.txt")
+		if ERR != nil {
+			fmt.Println("Error reading file:", ERR)
+			return
+		}
+		sb.WriteString(string(thisCanNeverPrintDontPanic))
 
-		// This runs at the end. In the case of a panic, you get steps to the next part
+		// This func runs at the end. Let's hope we don't PANIC!
 		defer func() {
 			if r := recover(); r != nil {
 				sb.WriteString(`<script>console.log("/flagify");</script>`)
@@ -117,11 +124,13 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 		err := decoder.Decode(&decodedNode)
 
 		if err != nil {
+			//The Decoding got messed up
 			fmt.Println(err)
 			sb.Reset()
 			sb.WriteString("Your Base 64 Decoded Input: ")
 			sb.WriteString(string(sanitisedString))
 		} else {
+			//Custom Decoder
 			decodedDataWithDepthLimit := customDecode(&decodedNode, 0)
 			sb.Reset()
 			current, ok := decodedDataWithDepthLimit.(*Node)
@@ -130,13 +139,13 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 				sb.WriteString(`<script>console.log("Error: Expected *Node")</script>`)
 			} else {
 				depth, outputString := getDepthAndDecodeData(current)
-				if 0 < depth && depth < 16 {
+				if 0 < depth && depth < 4 {
 					sb.WriteString("I can handle that without PANICking")
-				} else if depth >= 16 && depth < 32 {
+				} else if depth >= 4 && depth < 8 {
 					sb.WriteString("Not even half PANICked")
-				} else if depth >= 32 && depth < 48 {
+				} else if depth >= 8 && depth < 12 {
 					sb.WriteString("Bearable, just don't over do it")
-				} else if depth >= 48 && depth < 64 {
+				} else if depth >= 12 && depth < 16 {
 					sb.WriteString("Okay that's it, don't nest it anymore")
 				}
 				sb.WriteString(fmt.Sprintf(". Anyways, Your Decoded Input: {%v}", outputString))
@@ -155,9 +164,19 @@ func flagAuth(w http.ResponseWriter, r *http.Request) {
 	userInput := r.FormValue("userInput")
 	safeInput := html.EscapeString(userInput)
 
+	data, err := os.ReadFile("../flag.txt")
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+	api_key, err := os.ReadFile("./assets/api_key.txt")
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
 	var sb strings.Builder
-	if safeInput == "fzb nhc rwjr sxkzagr nhcz qnl piq sgp? ycreiaj kpdm awic nhc EVA4zUeGAYujKssfA2cApfQgPOnxFvpuJSwLluL3GR0=" {
-		sb.WriteString("🏁 : hackcenter{FLAGE}")
+	if safeInput == string(api_key) {
+		sb.WriteString(fmt.Sprintf("🏁: %s", string(data)))
 	} else {
 		sb.WriteString("🏁 : aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==")
 	}
