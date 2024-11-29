@@ -164,7 +164,7 @@ func flagAuth(w http.ResponseWriter, r *http.Request) {
 	userInput := r.FormValue("userInput")
 	safeInput := html.EscapeString(userInput)
 
-	data, err := os.ReadFile("../flag.txt")
+	data, err := os.ReadFile("./assets/flag.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return

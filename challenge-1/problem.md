@@ -9,7 +9,7 @@
 
 ## Hints
 
-- You might need this https://goplay.tools/snippet/8IXAiVn0sQj
+- You might need [this](https://goplay.tools/snippet/8IXAiVn0sQj)
 - If the route doesn't work, then you know I don't love it as much
 
 ## Description
